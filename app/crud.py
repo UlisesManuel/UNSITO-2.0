@@ -19,23 +19,22 @@ def obtener_noticias_recientes(db: Session, limite: int = 6):
 def obtener_noticias_carrusel(db: Session, limite_por_seccion: int = 2):
     """
     Trae las 1 o 2 noticias más recientes o modificadas de CADA sección.
-    Utiliza una ventana (Window Function) para particionar y filtrar eficientemente.
+    Corregido y optimizado para el estándar compatible con SQLAlchemy 2.0.
     """
-    # Creamos una subconsulta que numera las noticias dentro de cada sección ordenadas por modificación
+    # 1. Creamos la subconsulta seleccionando solo el ID y numerando las filas
     subquery = db.query(
-        models.Noticia,
+        models.Noticia.id.label("noticia_id"),
         func.row_number().over(
             partition_by=models.Noticia.seccion_id,
             order_by=models.Noticia.fecha_modificacion.desc()
         ).label("row_num")
     ).subquery()
 
-    # Filtramos para quedarnos solo con las primeras (1 o 2) de cada sección
-    noticias_filtradas = db.query(models.Noticia)\
-                           .select_entity_from(subquery)\
-                           .filter(subquery.c.row_num <= limite_por_seccion)\
-                           .all()
-    return noticias_filtradas
+    # 2. Hacemos el join con la tabla real usando la subconsulta moderna
+    return db.query(models.Noticia)\
+             .join(subquery, models.Noticia.id == subquery.c.noticia_id)\
+             .filter(subquery.c.row_num <= limite_por_seccion)\
+             .all()
 
 def obtener_noticias_por_seccion(db: Session, seccion_slug: str):
     """

@@ -2,102 +2,71 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from . import models
 
-# ==========================================
-# 1. LOGIC FOR THE CAROUSEL & RECENT FEED
-# ==========================================
+# ==============================================================================
+# FUNCIONES DE LECTURA (ADMIN Y FRONT)
+# ==============================================================================
 
-def obtener_noticias_recientes(db: Session, limite: int = 6):
+def obtener_todas_las_noticias_admin(db: Session):
     """
-    Trae las últimas noticias globales ordenadas por fecha de creación.
-    Útil para el feed principal debajo del carrusel.
+    Trae absolutamente todas las noticias ordenadas por la más reciente.
+    Ideal para la tabla del panel de administración.
     """
-    return db.query(models.Noticia)\
-             .order_by(models.Noticia.fecha_creacion.desc())\
-             .limit(limite)\
-             .all()
+    return db.query(models.Noticia).order_by(models.Noticia.fecha_modificacion.desc()).all()
 
-def obtener_noticias_carrusel(db: Session, limite_por_seccion: int = 2):
-    """
-    Trae las 1 o 2 noticias más recientes o modificadas de CADA sección.
-    Corregido y optimizado para el estándar compatible con SQLAlchemy 2.0.
-    """
-    # 1. Creamos la subconsulta seleccionando solo el ID y numerando las filas
-    subquery = db.query(
-        models.Noticia.id.label("noticia_id"),
-        func.row_number().over(
-            partition_by=models.Noticia.seccion_id,
-            order_by=models.Noticia.fecha_modificacion.desc()
-        ).label("row_num")
-    ).subquery()
-
-    # 2. Hacemos el join con la tabla real usando la subconsulta moderna
-    return db.query(models.Noticia)\
-             .join(subquery, models.Noticia.id == subquery.c.noticia_id)\
-             .filter(subquery.c.row_num <= limite_por_seccion)\
-             .all()
 
 def obtener_noticias_por_seccion(db: Session, seccion_slug: str):
     """
-    Trae todas las noticias pertenecientes a una sección específica usando su slug.
+    Filtra las noticias que pertenecen a una sección específica usando su slug.
     """
     return db.query(models.Noticia)\
              .join(models.Seccion)\
              .filter(models.Seccion.slug == seccion_slug)\
-             .order_by(models.Noticia.fecha_creacion.desc())\
+             .order_by(models.Noticia.fecha_modificacion.desc())\
              .all()
 
-# ==========================================
-# 2. LOGIC FOR THE DETAIL VIEW & METRICS
-# ==========================================
 
-def obtener_noticia_y_contar_visita(db: Session, noticia_id: int):
-    """
-    Busca una noticia por su ID e incrementa su contador de visualizaciones en +1.
-    """
-    noticia = db.query(models.Noticia).filter(models.Noticia.id == noticia_id).first()
-    if noticia:
-        noticia.visitas += 1
-        db.commit()
-        db.refresh(noticia)
-    return noticia
-
-# ==========================================
-# 3. ADMINISTRATOR CRUD (Altas, Bajas, Cambios)
-# ==========================================
+# ==============================================================================
+# FUNCIONES DE ESCRITURA (CUD - CREATE, UPDATE, DELETE)
+# ==============================================================================
 
 def crear_noticia(db: Session, titulo: str, contenido: str, imagen_url: str, seccion_id: int):
     """
-    Da de alta una nueva noticia en el sistema.
+    Inserta una nueva noticia en la base de datos.
     """
     nueva_noticia = models.Noticia(
         titulo=titulo,
         contenido=contenido,
         imagen_url=imagen_url,
-        seccion_id=seccion_id
+        seccion_id=seccion_id,
+        visitas=0  # Inicializa el contador de vistas en cero
     )
     db.add(nueva_noticia)
     db.commit()
     db.refresh(nueva_noticia)
     return nueva_noticia
 
+
 def modificar_noticia(db: Session, noticia_id: int, titulo: str, contenido: str, imagen_url: str, seccion_id: int):
     """
-    Modifica los datos de una noticia existente.
+    Busca una noticia por su ID y actualiza sus campos.
     """
     noticia = db.query(models.Noticia).filter(models.Noticia.id == noticia_id).first()
     if noticia:
         noticia.titulo = titulo
         noticia.contenido = contenido
-        if imagen_url:  # Solo la actualiza si el administrador subió una nueva
-            noticia.imagen_url = imagen_url
         noticia.seccion_id = seccion_id
+        # Si se envía una nueva imagen, se actualiza; si no, conserva la anterior
+        if imagen_url:
+            noticia.imagen_url = imagen_url
+        
         db.commit()
         db.refresh(noticia)
     return noticia
 
+
 def eliminar_noticia(db: Session, noticia_id: int):
     """
-    Elimina por completo una noticia utilizando su ID.
+    Elimina permanentemente una noticia de la base de datos usando su ID.
     """
     noticia = db.query(models.Noticia).filter(models.Noticia.id == noticia_id).first()
     if noticia:
@@ -105,9 +74,3 @@ def eliminar_noticia(db: Session, noticia_id: int):
         db.commit()
         return True
     return False
-
-def obtener_todas_las_noticias_admin(db: Session):
-    """
-    Lista todas las noticias con sus métricas de visitas para el Dashboard del Administrador.
-    """
-    return db.query(models.Noticia).order_by(models.Noticia.fecha_creacion.desc()).all()

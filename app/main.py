@@ -37,7 +37,7 @@ def es_administrador(request: Request):
     return request.cookies.get("sesion_admin") == "activa"
 
 # ==============================================================================
-# 3. RUTAS PÚBLICAS (FRONT-END CORREGIDAS)
+# 3. RUTAS PÚBLICAS
 # ==============================================================================
 
 @app.get("/")
@@ -45,8 +45,9 @@ def home(request: Request, db: Session = Depends(get_db)):
     noticias_carrusel = crud.obtener_noticias_carrusel(db, limite_por_seccion=2)
     noticias_recientes = crud.obtener_noticias_recientes(db, limite=6)
     return templates.TemplateResponse(
+        request,
         "index.html", 
-        {"request": request, "carrusel": noticias_carrusel, "recientes": noticias_recientes}
+        {"carrusel": noticias_carrusel, "recientes": noticias_recientes}
     )
 
 @app.get("/seccion/{slug}")
@@ -56,8 +57,9 @@ def ver_seccion(slug: str, request: Request, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Sección no encontrada")
     noticias = crud.obtener_noticias_por_seccion(db, seccion_slug=slug)
     return templates.TemplateResponse(
+        request,
         "seccion.html", 
-        {"request": request, "seccion": seccion, "noticias": noticias}
+        {"seccion": seccion, "noticias": noticias}
     )
 
 @app.get("/noticia/{noticia_id}")
@@ -66,13 +68,18 @@ def ver_noticia(noticia_id: int, request: Request, db: Session = Depends(get_db)
     if not noticia:
         raise HTTPException(status_code=404, detail="La noticia no existe")
     return templates.TemplateResponse(
+        request,
         "noticia.html", 
-        {"request": request, "noticia": noticia}
+        {"noticia": noticia}
     )
+
+# ==============================================================================
+# 4. RUTAS DE ADMINISTRACIÓN (PANEL PRIVADO CORREGIDO)
+# ==============================================================================
 
 @app.get("/login")
 def mostrar_login(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+    return templates.TemplateResponse(request, "login.html")
 
 @app.post("/login")
 def procesar_login(response: Response, usuario: str = Form(...), password: str = Form(...)):
@@ -93,48 +100,11 @@ def admin_dashboard(request: Request, db: Session = Depends(get_db)):
     if not es_administrador(request):
         return RedirectResponse(url="/login", status_code=303)
     noticias = crud.obtener_todas_las_noticias_admin(db)
-    return templates.TemplateResponse("admin/dashboard.html", context={"request": request, "noticias": noticias})
+    return templates.TemplateResponse(request, "admin/dashboard.html", {"noticias": noticias})
 
-@app.get("/admin/dashboard")
-def admin_dashboard(request: Request, db: Session = Depends(get_db)):
+@app.get("/admin/crear")
+def formulario_crear_noticia(request: Request, db: Session = Depends(get_db)):
     if not es_administrador(request):
         return RedirectResponse(url="/login", status_code=303)
-    noticias = crud.obtener_todas_las_noticias_admin(db)
-    return templates.TemplateResponse("admin/dashboard.html", {"request": request, "noticias": noticias})
-
-@app.post("/admin/crear")
-def guardar_nueva_noticia(
-    request: Request, titulo: str = Form(...), contenido: str = Form(...),
-    imagen_url: str = Form(...), seccion_id: int = Form(...), db: Session = Depends(get_db)
-):
-    if not es_administrador(request):
-        return RedirectResponse(url="/login", status_code=303)
-    crud.crear_noticia(db=db, titulo=titulo, contenido=contenido, imagen_url=imagen_url, seccion_id=seccion_id)
-    return RedirectResponse(url="/admin/dashboard", status_code=303)
-
-@app.get("/admin/editar/{noticia_id}")
-def formulario_editar_noticia(noticia_id: int, request: Request, db: Session = Depends(get_db)):
-    if not es_administrador(request):
-        return RedirectResponse(url="/login", status_code=303)
-    noticia = db.query(models.Noticia).filter(models.Noticia.id == noticia_id).first()
-    if not noticia:
-        raise HTTPException(status_code=404, detail="Noticia no encontrada")
     secciones = db.query(models.Seccion).all()
-    return templates.TemplateResponse("admin/editar.html", context={"request": request, "noticia": noticia, "secciones": secciones})
-
-@app.post("/admin/editar/{noticia_id}")
-def actualizar_noticia(
-    noticia_id: int, request: Request, titulo: str = Form(...), contenido: str = Form(...),
-    imagen_url: str = Form(None), seccion_id: int = Form(...), db: Session = Depends(get_db)
-):
-    if not es_administrador(request):
-        return RedirectResponse(url="/login", status_code=303)
-    crud.modificar_noticia(db=db, noticia_id=noticia_id, titulo=titulo, contenido=contenido, imagen_url=imagen_url, seccion_id=seccion_id)
-    return RedirectResponse(url="/admin/dashboard", status_code=303)
-
-@app.get("/admin/eliminar/{noticia_id}")
-def borrar_noticia_ruta(noticia_id: int, request: Request, db: Session = Depends(get_db)):
-    if not es_administrador(request):
-        return RedirectResponse(url="/login", status_code=303)
-    crud.eliminar_noticia(db=db, noticia_id=noticia_id)
-    return RedirectResponse(url="/admin/dashboard", status_code=303)
+    return

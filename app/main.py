@@ -2,7 +2,8 @@
 # 1. TODAS LAS IMPORTACIONES (HASTA ARRIBA)
 # ==============================================================================
 import os
-from fastapi import FastAPI, Depends, Request, HTTPException, Form, Response
+import shutil
+from fastapi import FastAPI, Depends, Request, HTTPException, Form, Response, Cookie, File, UploadFile
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
@@ -25,6 +26,10 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # Montar archivos estáticos (CSS, JS, Imágenes)
 app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
 
+# Configurar directorio para almacenar las imágenes subidas físicamente
+IMAGENES_DIR = os.path.join(BASE_DIR, "static", "imagenes")
+os.makedirs(IMAGENES_DIR, exist_ok=True)
+
 # Configurar el motor de plantillas Jinja2
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
@@ -35,6 +40,19 @@ ADMIN_PASS = "admin123"
 def es_administrador(request: Request):
     """Función auxiliar para verificar si el usuario está logueado mediante cookies"""
     return request.cookies.get("sesion_admin") == "activa"
+
+def verificar_admin_cookie(request: Request):
+    """
+    Dependencia de seguridad que valida la cookie del administrador.
+    Si no es válida, interrumpe la petición lanzando una redirección limpia.
+    """
+    if request.cookies.get("sesion_admin") != "activa":
+        raise HTTPException(
+            status_code=303, 
+            headers={"Location": "/login"},
+            detail="No autorizado"
+        )
+    return True
 
 # ==============================================================================
 # 3. RUTAS PÚBLICAS
@@ -74,7 +92,7 @@ def ver_noticia(noticia_id: int, request: Request, db: Session = Depends(get_db)
     )
 
 # ==============================================================================
-# 4. RUTAS DE ADMINISTRACIÓN (PANEL PRIVADO CORREGIDO)
+# 4. RUTAS DE ADMINISTRACIÓN (PANEL PRIVADO BLINDADO Y CON SOPORTE PARA ARCHIVOS)
 # ==============================================================================
 
 @app.get("/login")
@@ -96,15 +114,65 @@ def cerrar_sesion():
     return respuesta
 
 @app.get("/admin/dashboard")
-def admin_dashboard(request: Request, db: Session = Depends(get_db)):
-    if not es_administrador(request):
-        return RedirectResponse(url="/login", status_code=303)
+def admin_dashboard(request: Request, db: Session = Depends(get_db), _=Depends(verificar_admin_cookie)):
     noticias = crud.obtener_todas_las_noticias_admin(db)
     return templates.TemplateResponse(request, "admin/dashboard.html", {"noticias": noticias})
 
 @app.get("/admin/crear")
-def formulario_crear_noticia(request: Request, db: Session = Depends(get_db)):
-    if not es_administrador(request):
-        return RedirectResponse(url="/login", status_code=303)
+def formulario_crear_noticia(request: Request, db: Session = Depends(get_db), _=Depends(verificar_admin_cookie)):
     secciones = db.query(models.Seccion).all()
-    return
+    return templates.TemplateResponse(request, "admin/crear.html", {"secciones": secciones})
+
+@app.post("/admin/crear")
+def guardar_nueva_noticia(
+    titulo: str = Form(...), 
+    contenido: str = Form(...),
+    seccion_id: int = Form(...), 
+    imagen: UploadFile = File(...), # Recibe el archivo binario real
+    db: Session = Depends(get_db), 
+    _=Depends(verificar_admin_cookie)
+):
+    # Guardar el archivo físicamente en el servidor
+    ruta_archivo_local = os.path.join(IMAGENES_DIR, imagen.filename)
+    with open(ruta_archivo_local, "wb") as buffer:
+        shutil.copyfileobj(imagen.file, buffer)
+        
+    # Ruta web que se guardará en la base de datos
+    imagen_url = f"/static/imagenes/{imagen.filename}"
+    
+    crud.crear_noticia(db=db, titulo=titulo, contenido=contenido, imagen_url=imagen_url, seccion_id=seccion_id)
+    return RedirectResponse(url="/admin/dashboard", status_code=303)
+
+@app.get("/admin/editar/{noticia_id}")
+def formulario_editar_noticia(noticia_id: int, request: Request, db: Session = Depends(get_db), _=Depends(verificar_admin_cookie)):
+    noticia = db.query(models.Noticia).filter(models.Noticia.id == noticia_id).first()
+    if not noticia:
+        raise HTTPException(status_code=404, detail="Noticia no encontrada")
+    secciones = db.query(models.Seccion).all()
+    return templates.TemplateResponse(request, "admin/editar.html", {"noticia": noticia, "secciones": secciones})
+
+@app.post("/admin/editar/{noticia_id}")
+def actualizar_noticia(
+    noticia_id: int, 
+    titulo: str = Form(...), 
+    contenido: str = Form(...),
+    seccion_id: int = Form(...), 
+    imagen: UploadFile = File(None), # El archivo es opcional al editar
+    db: Session = Depends(get_db), 
+    _=Depends(verificar_admin_cookie)
+):
+    imagen_url = None
+    # Si el usuario subió una nueva imagen, la guardamos; de lo contrario, el CRUD mantiene la ruta vieja
+    if imagen and imagen.filename:
+        ruta_archivo_local = os.path.join(IMAGENES_DIR, imagen.filename)
+        with open(ruta_archivo_local, "wb") as buffer:
+            shutil.copyfileobj(imagen.file, buffer)
+        imagen_url = f"/static/imagenes/{imagen.filename}"
+
+    crud.modificar_noticia(db=db, noticia_id=noticia_id, titulo=titulo, contenido=contenido, imagen_url=imagen_url, seccion_id=seccion_id)
+    return RedirectResponse(url="/admin/dashboard", status_code=303)
+
+@app.get("/admin/eliminar/{noticia_id}")
+def borrar_noticia_ruta(noticia_id: int, db: Session = Depends(get_db), _=Depends(verificar_admin_cookie)):
+    crud.eliminar_noticia(db=db, noticia_id=noticia_id)
+    return RedirectResponse(url="/admin/dashboard", status_code=303)

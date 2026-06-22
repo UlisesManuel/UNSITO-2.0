@@ -9,9 +9,10 @@ def poblar_secciones():
     try:
         # Secciones base correspondientes a tus páginas del UNSITO
         secciones_base = [
-            {"nombre": "Actividades Académicas", "slug": "ActAca"},
-            {"nombre": "Actividades Culturales", "slug": "ActCul"},
-            {"nombre": "Actividades Deportivas", "slug": "ActDepo"}
+            {"nombre": "Academia", "slug": "academia"},
+            {"nombre": "Cultura", "slug": "cultura"},
+            {"nombre": "Deportes", "slug": "deportes"},
+            {"nombre": "Avisos Oficiales", "slug": "avisos-oficiales"}
         ]
         
         print("Insertando secciones base...")

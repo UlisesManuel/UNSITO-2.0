@@ -7,6 +7,35 @@ import html
 # FUNCIONES DE LECTURA (ADMIN Y FRONT)
 # ==============================================================================
 
+def obtener_noticias_carrusel(db: Session, limite_por_seccion: int = 2):
+    """
+    Obtiene las noticias para el carrusel de la página de inicio.
+    """
+    return db.query(models.Noticia)\
+             .order_by(models.Noticia.visitas.desc())\
+             .limit(limite_por_seccion * 2)\
+             .all()
+
+def obtener_noticias_recientes(db: Session, limite: int = 6):
+    """
+    Trae las últimas publicaciones ordenadas de forma cronológica descendente.
+    """
+    return db.query(models.Noticia)\
+             .order_by(models.Noticia.id.desc())\
+             .limit(limite)\
+             .all()
+
+def obtener_noticia_y_contar_visita(db: Session, noticia_id: int):
+    """
+    Busca una noticia por su ID y le aumenta el contador de visitas.
+    """
+    noticia = db.query(models.Noticia).filter(models.Noticia.id == noticia_id).first()
+    if noticia:
+        noticia.visitas += 1
+        db.commit()
+        db.refresh(noticia)
+    return noticia
+
 def obtener_todas_las_noticias_admin(db: Session):
     """
     Trae absolutamente todas las noticias ordenadas por la más reciente.

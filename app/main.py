@@ -70,10 +70,17 @@ def home(request: Request, db: Session = Depends(get_db)):
 
 @app.get("/seccion/{slug}")
 def ver_seccion(slug: str, request: Request, db: Session = Depends(get_db)):
-    seccion = db.query(models.Seccion).filter(models.Seccion.slug == slug).first()
+    # Buscamos ignorando mayúsculas/minúsculas tanto en el slug como en el nombre
+    seccion = db.query(models.Seccion).filter(
+        (models.Seccion.slug == slug.lower()) | 
+        (models.Seccion.nombre.ilike(slug))
+    ).first()
+    
     if not seccion:
         raise HTTPException(status_code=404, detail="Sección no encontrada")
-    noticias = crud.obtener_noticias_por_seccion(db, seccion_slug=slug)
+        
+    # Usamos el slug real de la base de datos para traer las noticias
+    noticias = crud.obtener_noticias_por_seccion(db, seccion_slug=seccion.slug)
     return templates.TemplateResponse(
         request,
         "seccion.html", 

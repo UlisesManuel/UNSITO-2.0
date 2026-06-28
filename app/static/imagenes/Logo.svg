@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 140" width="100%" height="100%">
+  <defs>
+    <!-- Degradado para los detalles en oro brillante -->
+    <linearGradient id="oroGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+  </defs>
+
+  <!-- SÍMBOLO / ISOTIPO (Escalado a 120x120) -->
+  <g transform="translate(10, 10)">
+    <!-- Contenedor transparente con borde sutil de luz -->
+    <rect x="0" y="0" width="120" height="120" rx="28" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.2)" stroke-width="2.5" />
+    
+    <!-- Detalles de la Gaceta (Líneas de periódico en blanco puro) -->
+    <path d="M 30 42 L 65 42 M 30 60 L 55 60 M 30 78 L 60 78" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" />
+    
+    <!-- Detalles de Informática (Símbolo de código en oro brillante) -->
+    <path d="M 80 65 L 92 77 L 80 89" fill="none" stroke="url(#oroGrad)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 68 89 L 74 65" fill="none" stroke="url(#oroGrad)" stroke-width="4.5" stroke-linecap="round" />
+    
+    <!-- Línea decorativa inferior en oro -->
+    <rect x="25" y="106" width="70" height="5" rx="2.5" fill="url(#oroGrad)" />
+  </g>
+
+  <!-- TEXTO DEL LOGO (Escalado y Reajustado) -->
+  <!-- "EL UNSITO" -->
+  <text x="155" y="78" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="54" fill="#ffffff" letter-spacing="-2.5">EL UNSITO</text>
+  
+  <!-- Badge "2.0" -->
+  <g transform="translate(435, 34)">
+    <rect x="0" y="0" width="60" height="28" rx="8" fill="url(#oroGrad)" />
+    <text x="30" y="19" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="15" fill="#3d0b0b" text-anchor="middle">2.0</text>
+  </g>
+
+  <!-- Subtítulo "GACETA UNIVERSITARIA" -->
+  <text x="157" y="106" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="14" fill="#ffffff" opacity="0.6" letter-spacing="4.5">GACETA UNIVERSITARIA</text>
+</svg>

@@ -1,73 +1,173 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full bg-slate-50">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ seccion.nombre }} - EL UNSITO 2.0</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <style>
-        .card-img-top { height: 220px; object-fit: cover; }
-    </style>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        institucional: {
+                            50: '#fdf3f3',
+                            100: '#fbe4e4',
+                            600: '#841f1f',
+                            700: '#6a1616', 
+                            800: '#561111',
+                            900: '#3d0b0b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-light d-flex flex-column min-vh-100">
+<body class="flex flex-col min-h-full font-sans antialiased text-slate-800">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="/">
-                <i class="bi bi-newspaper me-2"></i>EL UNSITO <span class="badge bg-warning text-dark fs-6 align-middle">2.0</span>
-            </a>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto fw-semibold">
-                    <li class="nav-item"><a class="nav-link text-white" href="/seccion/academia">Academia</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="/seccion/cultura">Cultura</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="/seccion/deportes">Deportes</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="/seccion/avisos-oficiales">Avisos</a></li>
-                </ul>
+    <!-- Barra de Navegación Premium e Institucional -->
+    <nav class="bg-institucional-700 text-white shadow-md sticky top-0 z-50 border-b border-institucional-800 py-3">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between">
+                
+                <!-- Contenedor del Logo de la Gaceta -->
+                <div class="flex-shrink-0 flex items-center">
+                    <a class="flex items-center" href="/">
+                        <img src="/static/img/logo_unsito_blanco.svg" alt="EL UNSITO 2.0" class="h-14 w-auto select-none block">
+                    </a>
+                </div>
+                
+                <!-- Menú de Navegación (Escritorio) -->
+                <div class="hidden md:flex items-center gap-8 font-bold text-sm tracking-wide">
+                    <a class="hover:text-amber-300 transition-colors py-2 border-b-2 border-transparent hover:border-amber-400" href="/seccion/academia">Academia</a>
+                    <a class="hover:text-amber-300 transition-colors py-2 border-b-2 border-transparent hover:border-amber-400" href="/seccion/cultura">Cultura</a>
+                    <a class="hover:text-amber-300 transition-colors py-2 border-b-2 border-transparent hover:border-amber-400" href="/seccion/deportes">Deportes</a>
+                    <a class="hover:text-amber-300 transition-colors py-2 border-b-2 border-transparent hover:border-amber-400" href="/seccion/avisos-oficiales">Avisos</a>
+                    
+                    <a class="ml-2 bg-white/10 hover:bg-white text-white hover:text-institucional-700 border border-white/20 hover:border-white transition-all px-4 py-2 rounded-xl text-xs uppercase font-extrabold tracking-wider flex items-center gap-2 shadow-sm" href="/login">
+                        <!-- Heroicons: user (Solid) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                            <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
+                        </svg>
+                        Admin
+                    </a>
+                </div>
+
+                <!-- Botón de Menú Móvil -->
+                <div class="md:hidden">
+                    <button type="button" class="text-white hover:text-amber-300 p-2 rounded-lg hover:bg-white/5 transition-colors" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                        <!-- Heroicons: bars-3 (Outline) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                    </button>
+                </div>
             </div>
+        </div>
+
+        <!-- Menú Desplegable Móvil -->
+        <div id="mobile-menu" class="hidden md:hidden bg-institucional-800 px-4 pt-2 pb-4 space-y-2 border-t border-institucional-600 mt-2">
+            <a class="block hover:text-amber-300 py-2 font-medium" href="/seccion/academia">Academia</a>
+            <a class="block hover:text-amber-300 py-2 font-medium" href="/seccion/cultura">Cultura</a>
+            <a class="block hover:text-amber-300 py-2 font-medium" href="/seccion/deportes">Deportes</a>
+            <a class="block hover:text-amber-300 py-2 font-medium" href="/seccion/avisos-oficiales">Avisos</a>
+            <a class="inline-flex items-center gap-1.5 bg-white text-institucional-700 px-4 py-2 rounded-lg font-bold w-full justify-center mt-2 text-sm uppercase" href="/login">
+                <!-- Heroicons: user (Solid) -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                    <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
+                </svg>
+                Admin
+            </a>
         </div>
     </nav>
 
-    <header class="bg-white py-5 border-bottom mb-5">
-        <div class="container text-center">
-            <span class="badge bg-primary px-3 py-2 mb-2 fs-6 text-uppercase">Sección Editorial</span>
-            <h1 class="fw-bold display-4 text-dark m-0">{{ seccion.nombre }}</h1>
+    <!-- Encabezado de la Sección -->
+    <header class="bg-white py-12 border-b border-slate-100 mb-10 shadow-sm shadow-slate-100/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <span class="inline-block bg-institucional-100 text-institucional-700 font-extrabold text-xs tracking-wider uppercase px-3 py-1.5 rounded-lg mb-3">
+                Sección Editorial
+            </span>
+            <h1 class="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight">
+                {{ seccion.nombre }}
+            </h1>
         </div>
     </header>
 
-    <div class="container mb-5 flex-grow-1">
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            {% if noticias %}
+    <!-- Contenedor Principal de Notas -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+        
+        {% if noticias %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {% for noticia in noticias %}
-                <div class="col">
-                    <div class="card h-100 shadow-sm border-0 overflow-hidden">
-                        <img src="{{ noticia.imagen_url }}" class="card-img-top" alt="Portada">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title fw-bold text-dark">{{ noticia.titulo }}</h5>
-                            <p class="card-text text-muted small flex-grow-1 text-truncate" style="max-height: 60px;">
-                                {{ noticia.contenido }}
-                            </p>
-                            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
-                                <span class="small text-muted"><i class="bi bi-eye me-1"></i>{{ noticia.visitas }} vistas</span>
-                                <a href="/noticia/{{ noticia.id }}" class="btn btn-outline-primary btn-sm fw-semibold">Leer Nota</a>
-                            </div>
+                <article class="bg-white rounded-3xl shadow-md shadow-slate-200/60 border border-slate-100 overflow-hidden flex flex-col transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+                    
+                    <!-- Imagen de la Noticia -->
+                    <div class="h-56 w-full bg-slate-100 overflow-hidden relative">
+                        <img src="{{ noticia.imagen_url }}" class="w-full h-full object-cover object-center" alt="Portada de la nota">
+                    </div>
+                    
+                    <!-- Cuerpo de la Tarjeta -->
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h2 class="text-xl font-bold text-slate-900 line-clamp-2 mb-3 leading-snug">
+                            {{ noticia.titulo }}
+                        </h2>
+                        
+                        <p class="text-slate-500 text-sm line-clamp-3 flex-grow mb-5 leading-relaxed">
+                            {{ noticia.contenido }}
+                        </p>
+                        
+                        <!-- Footer de la Tarjeta -->
+                        <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+                            <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 bg-slate-50 px-2.5 py-1 rounded-md">
+                                <!-- Heroicons: eye (Solid) -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5 text-slate-400">
+                                    <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                                    <path fill-rule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.466-5.704 7.69-10.674 7.69-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clip-rule="evenodd" />
+                                </svg>
+                                {{ noticia.visitas }} vistas
+                            </span>
+                            
+                            <a href="/noticia/{{ noticia.id }}" class="inline-flex items-center gap-1 text-sm font-bold text-institucional-600 hover:text-institucional-800 transition-colors group">
+                                Leer Nota
+                                <!-- Heroicons: chevron-right (Outline) -->
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                </svg>
+                            </a>
                         </div>
                     </div>
-                </div>
+                </article>
                 {% endfor %}
-            {% else %}
-                <div class="col-12 text-center py-5 text-muted">
-                    <i class="bi bi-folder-x display-1 d-block mb-3 text-secondary"></i>
-                    <h4>No hay publicaciones en esta sección todavía.</h4>
-                    <a href="/" class="btn btn-primary btn-sm mt-3">Volver al Inicio</a>
+            </div>
+        {% else %}
+            <!-- Estado de Sección Vacía (Empty State) -->
+            <div class="max-w-md mx-auto text-center py-16 px-4">
+                <div class="bg-slate-100 p-4 rounded-3xl inline-block mb-4 text-slate-400">
+                    <!-- Heroicons: folder-minus (Outline) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                    </svg>
                 </div>
-            {% endif %}
-        </div>
-    </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">No hay publicaciones</h3>
+                <p class="text-slate-500 text-sm mb-6">Aún no se han añadido notas editoriales dentro de la sección de {{ seccion.nombre }}.</p>
+                <a href="/" class="inline-flex items-center gap-1.5 bg-institucional-600 hover:bg-institucional-700 text-white font-bold text-sm px-5 py-2.5 rounded-xl shadow-md shadow-institucional-600/10 transition-all">
+                    <!-- Heroicons: arrow-left (Outline) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                    </svg>
+                    Volver al Inicio
+                </a>
+            </div>
+        {% endif %}
+        
+    </main>
 
-    <footer class="bg-dark text-white py-4 mt-auto">
-        <div class="container text-center">
-            <p class="m-0 small text-secondary">&copy; 2026 EL UNSITO 2.0 - Universidad de la Sierra Sur.</p>
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-xs font-medium tracking-wide">&copy; 2026 EL UNSITO 2.0 &bull; Universidad de la Sierra Sur</p>
         </div>
     </footer>
 

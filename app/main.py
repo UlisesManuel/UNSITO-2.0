@@ -60,7 +60,7 @@ def verificar_admin_cookie(request: Request):
 
 @app.get("/")
 def home(request: Request, db: Session = Depends(get_db)):
-    noticias_carrusel = crud.obtener_noticias_carrusel(db, limite_por_seccion=2)
+    noticias_carrusel = crud.obtener_noticias_carrusel(db, limite_por_seccion=2 )
     noticias_recientes = crud.obtener_noticias_recientes(db, limite=6)
     return templates.TemplateResponse(
         request,

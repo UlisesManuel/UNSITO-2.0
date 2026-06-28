@@ -1,139 +1,240 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full bg-slate-50">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EL UNSITO 2.0 - Gaceta Universitaria</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <style>
-        .carousel-item img {
-            height: 450px;
-            object-fit: cover;
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        institucional: {
+                            50: '#fdf3f3',
+                            100: '#fbe4e4',
+                            600: '#841f1f',
+                            700: '#6a1616', 
+                            800: '#561111',
+                            900: '#3d0b0b'
+                        }
+                    }
+                }
+            }
         }
-        .card-img-top {
-            height: 200px;
-            object-fit: cover;
-        }
-    </style>
+    </script>
 </head>
-<body class="bg-light">
+<body class="flex flex-col min-h-full font-sans antialiased text-slate-800">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="/">
-                <i class="bi bi-newspaper me-2"></i>EL UNSITO <span class="badge bg-warning text-dark fs-6 align-middle">2.0</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto fw-semibold">
-                    <li class="nav-item"><a class="nav-link text-white" href="/seccion/academia">Academia</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="/seccion/cultura">Cultura</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="/seccion/deportes">Deportes</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="/seccion/avisos-oficiales">Avisos</a></li>
-                    <li class="nav-item ms-lg-3">
-                        <a class="btn btn-outline-light btn-sm px-3 mt-1 mt-lg-0" href="/login">
-                            <i class="bi bi-person-fill me-1"></i>Admin
-                        </a>
-                    </li>
-                </ul>
+    <!-- Navbar Premium -->
+    <nav class="bg-institucional-700 text-white shadow-md sticky top-0 z-50 border-b border-institucional-800 py-3">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between">
+                
+                <!-- Logo Grande SVG -->
+                <div class="flex-shrink-0 flex items-center">
+                    <a class="flex items-center" href="/">
+                        <img src="/static/imagenes/Logo.svg" alt="Logo UNSIS" class="h-14 w-auto select-none block drop-shadow-md">
+                    </a>
+                </div>
+                
+                <!-- Menú Escritorio -->
+                <div class="hidden md:flex items-center gap-8 font-bold text-sm tracking-wide">
+                    <a class="hover:text-amber-300 transition-colors py-2 border-b-2 border-transparent hover:border-amber-400" href="/seccion/academia">Academia</a>
+                    <a class="hover:text-amber-300 transition-colors py-2 border-b-2 border-transparent hover:border-amber-400" href="/seccion/cultura">Cultura</a>
+                    <a class="hover:text-amber-300 transition-colors py-2 border-b-2 border-transparent hover:border-amber-400" href="/seccion/deportes">Deportes</a>
+                    <a class="hover:text-amber-300 transition-colors py-2 border-b-2 border-transparent hover:border-amber-400" href="/seccion/avisos-oficiales">Avisos</a>
+                    
+                    <a class="ml-2 bg-white/10 hover:bg-white text-white hover:text-institucional-700 border border-white/20 hover:border-white transition-all px-4 py-2 rounded-xl text-xs uppercase font-extrabold tracking-wider flex items-center gap-2 shadow-sm" href="/login">
+                        <!-- Heroicons: user (Solid) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                            <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
+                        </svg>
+                        Admin
+                    </a>
+                </div>
+
+                <!-- Botón Menú Móvil -->
+                <div class="md:hidden">
+                    <button type="button" class="text-white hover:text-amber-300 p-2 rounded-lg hover:bg-white/5 transition-colors" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                        <!-- Heroicons: bars-3 (Outline) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                    </button>
+                </div>
             </div>
+        </div>
+
+        <!-- Menú Desplegable Móvil -->
+        <div id="mobile-menu" class="hidden md:hidden bg-institucional-800 px-4 pt-2 pb-4 space-y-2 border-t border-institucional-600 mt-2">
+            <a class="block hover:text-amber-300 py-2 font-medium" href="/seccion/academia">Academia</a>
+            <a class="block hover:text-amber-300 py-2 font-medium" href="/seccion/cultura">Cultura</a>
+            <a class="block hover:text-amber-300 py-2 font-medium" href="/seccion/deportes">Deportes</a>
+            <a class="block hover:text-amber-300 py-2 font-medium" href="/seccion/avisos-oficiales">Avisos</a>
+            <a class="inline-flex items-center gap-1.5 bg-white text-institucional-700 px-4 py-2 rounded-lg font-bold w-full justify-center mt-2 text-sm uppercase" href="/login">
+                <!-- Heroicons: user (Solid) -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                    <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
+                </svg>
+                Admin
+            </a>
         </div>
     </nav>
 
-    <header class="bg-white py-4 border-bottom mb-4">
-        <div class="container text-center">
-            <h1 class="fw-black display-5 text-dark m-0">Comunidad Universitaria Informada</h1>
-            <p class="lead text-muted m-0">Espacio digital de proyectos, cultura y vida estudiantil</p>
+    <!-- Header Institucional -->
+    <header class="bg-white py-8 border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <img src="/static/imagenes/UNSIS.png" alt="Logo Universidad" class="mx-auto h-24 w-auto mb-4 object-contain">
+            <h1 class="font-black text-3xl md:text-5xl text-slate-900 tracking-tight">Comunidad Universitaria Informada</h1>
+            <p class="mt-2 text-lg text-slate-500 font-medium">Espacio digital de proyectos, cultura y vida estudiantil</p>
         </div>
     </header>
 
-    <div class="container mb-5">
-        <div class="row g-4">
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+        
+        <!-- Grid Destacados + Widget -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
             
-            <div class="col-lg-8">
-                <h3 class="fw-bold mb-3 text-primary"><i class="bi bi-star-fill me-2"></i>Destacados</h3>
+            <!-- Nota Principal Destacada -->
+            <div class="lg:col-span-2">
+                <h3 class="font-bold text-xl text-institucional-700 mb-4 flex items-center gap-2">
+                    <!-- Heroicons: star (Solid) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-amber-500">
+                        <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clip-rule="evenodd" />
+                    </svg>
+                    Destacados
+                </h3>
                 
                 {% if carrusel %}
-                <div id="carouselExampleCaptions" class="carousel slide shadow rounded overflow-hidden" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        {% for noticia in carrusel %}
-                        <div class="carousel-item {% if loop.first %}active{% endif %}">
-                            <img src="{{ noticia.imagen_url }}" class="d-block w-100" alt="Portada">
-                            <div class="carousel-caption d-none d-md-block" style="background: rgba(0, 0, 0, 0.6); border-radius: 10px;">
-                                <h5 class="fw-bold px-3">{{ noticia.titulo }}</h5>
-                                <p class="small px-3 text-truncate">{{ noticia.contenido }}</p>
-                                <a href="/noticia/{{ noticia.id }}" class="btn btn-warning btn-sm fw-bold mb-2">Leer nota completa</a>
-                            </div>
-                        </div>
-                        {% endfor %}
+                <div class="relative bg-slate-900 rounded-2xl overflow-hidden shadow-lg group aspect-[16/9]">
+                    {% for noticia in carrusel %}
+                    {% if loop.first %}
+                    <img src="{{ noticia.imagen_url }}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition-transform duration-500" alt="Portada">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                    <div class="absolute bottom-0 p-6 md:p-8 text-white w-full">
+                        <h5 class="text-xl md:text-3xl font-black mb-2 leading-tight tracking-tight">{{ noticia.titulo }}</h5>
+                        <p class="text-sm text-slate-200 line-clamp-2 mb-4 max-w-2xl">{{ noticia.contenido }}</p>
+                        <a href="/noticia/{{ noticia.id }}" class="inline-flex items-center bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold px-4 py-2 rounded-xl text-sm transition-all shadow-md transform hover:-translate-y-0.5">
+                            Leer nota completa
+                        </a>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    </button>
+                    {% endif %}
+                    {% endfor %}
                 </div>
                 {% else %}
-                <div class="alert alert-info">No hay noticias destacadas aún.</div>
+                <div class="bg-institucional-50 border border-institucional-200 text-institucional-800 p-4 rounded-xl text-sm font-medium">
+                    No hay noticias destacadas aún.
+                </div>
                 {% endif %}
             </div>
 
-            <div class="col-lg-4">
-                <div class="card shadow-sm border-0 bg-dark text-white p-4 h-100 d-flex flex-column justify-content-center">
-                    <h4 class="fw-bold text-warning"><i class="bi bi-lightning-fill me-2"></i>Gaceta Automatizada</h4>
-                    <p class="small text-light-50">Desarrollada con arquitectura limpia usando FastAPI en el backend y Jinja2 + Bootstrap en las vistas del sistema.</p>
-                    <hr class="border-secondary">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-calendar3 fs-4 me-3 text-warning"></i>
+            <!-- Info Gaceta (Widget Informativo) -->
+            <div class="lg:col-span-1">
+                <div class="bg-institucional-900 text-white p-6 rounded-2xl shadow-lg h-full flex flex-col justify-between border border-institucional-800 relative overflow-hidden group">
+                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
+                    <div>
+                        <h4 class="font-black text-xl text-amber-400 flex items-center gap-2 mb-3">
+                            <!-- Heroicons: information-circle (Solid) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                                <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 0 1 .67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 1 1-.671-1.34l.041-.022ZM12 9a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
+                            </svg>
+                            Bienvenido al EL UNSITO
+                        </h4>
+                        <p class="text-sm text-institucional-100 leading-relaxed font-light mb-4">
+                            Creada en el año 2026 Buscando revivir la sección que anteriormente era impresa ahora modernizada en un sitio web dinámico y llamativo.
+                        </p>
+                        <p class="text-sm text-institucional-100 leading-relaxed font-light">
+                            Desarrollada con arquitectura limpia usando <span class="text-amber-300 font-medium">FastAPI</span> en el backend y <span class="text-amber-300 font-medium">Jinja2</span> en las vistas del sistema.
+                        </p>
+                    </div>
+                    <div class="border-t border-institucional-800 pt-4 mt-6 flex items-center gap-4">
+                        <div class="bg-institucional-800 p-2.5 rounded-xl text-amber-400 shadow-inner">
+                            <!-- Heroicons: calendar-days (Outline) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                            </svg>
+                        </div>
                         <div>
-                            <div class="small text-muted">Fecha Actual</div>
-                            <div class="fw-bold text-white">Periodo Escolar Activo</div>
+                            <div class="text-xs text-institucional-200 uppercase tracking-wider font-semibold">Fecha Actual</div>
+                            <div class="font-bold text-sm text-white">Periodo Escolar Activo</div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
 
-        <h3 class="fw-bold my-4 text-dark"><i class="bi bi-clock-history me-2"></i>Últimas Publicaciones</h3>
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <!-- Últimas Publicaciones -->
+        <h3 class="font-bold text-2xl text-slate-900 mb-6 flex items-center gap-2">
+            <!-- Heroicons: clock (Outline) -->
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6 text-institucional-700">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            Últimas Publicaciones
+        </h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {% if recientes %}
                 {% for noticia in recientes %}
-                <div class="col">
-                    <div class="card h-100 shadow-sm border-0 overflow-hidden">
-                        <img src="{{ noticia.imagen_url }}" class="card-img-top" alt="Miniatura">
-                        <div class="card-body d-flex flex-column">
-                            <span class="badge bg-secondary align-self-start mb-2">{{ noticia.seccion.nombre }}</span>
-                            <h5 class="card-title fw-bold text-dark">{{ noticia.titulo }}</h5>
-                            <p class="card-text text-muted small flex-grow-1 text-truncate" style="max-height: 50px;">
-                                {{ noticia.contenido }}
-                            </p>
-                            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
-                                <span class="small text-muted"><i class="bi bi-eye me-1"></i>{{ noticia.visitas }} vistas</span>
-                                <a href="/noticia/{{ noticia.id }}" class="btn btn-outline-primary btn-sm fw-semibold">Leer Más</a>
-                            </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col hover:shadow-md transition-all duration-300 group">
+                    <!-- Imagen de la Card -->
+                    <div class="overflow-hidden aspect-[4/3] bg-slate-100 relative">
+                        <img src="{{ noticia.imagen_url }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="Miniatura">
+                        <span class="absolute top-3 left-3 bg-institucional-700 text-white text-xs font-bold px-2.5 py-1 rounded-lg tracking-wide uppercase shadow-sm">
+                            {{ noticia.seccion.nombre }}
+                        </span>
+                    </div>
+                    
+                    <!-- Contenido de la Card -->
+                    <div class="p-5 flex flex-col flex-grow">
+                        <h5 class="text-lg font-bold text-slate-900 group-hover:text-institucional-700 transition-colors line-clamp-2 leading-snug mb-2">
+                            {{ noticia.titulo }}
+                        </h5>
+                        <p class="text-sm text-slate-500 line-clamp-3 leading-relaxed flex-grow mb-4">
+                            {{ noticia.contenido }}
+                        </p>
+                        
+                        <!-- Footer de la Card -->
+                        <div class="flex justify-between items-center pt-4 border-t border-slate-100 text-xs text-slate-400">
+                            <span class="flex items-center gap-1.5 font-medium">
+                                <!-- Heroicons: eye (Outline) -->
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-slate-400">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                </svg>
+                                {{ noticia.visitas }} visitas
+                            </span>
+                            <a href="/noticia/{{ noticia.id }}" class="text-institucional-700 hover:text-institucional-800 font-bold flex items-center gap-1 transition-all group-hover:translate-x-1">
+                                Leer Más 
+                                <!-- Heroicons: arrow-right (Solid) -->
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5">
+                                    <path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                </svg>
+                            </a>
                         </div>
                     </div>
                 </div>
                 {% endfor %}
             {% else %}
-                <div class="col-12 text-center py-4 text-muted">
+                <div class="col-span-full text-center py-12 text-slate-400 bg-white rounded-2xl border border-dashed border-slate-200">
+                    <!-- Heroicons: folder-minus (Outline) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 mx-auto mb-2 text-slate-300">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 13.5H9m4.06-7.19-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z" />
+                    </svg>
                     No hay publicaciones recientes.
                 </div>
             {% endif %}
         </div>
-    </div>
+    </main>
 
-    <footer class="bg-dark text-white py-4 mt-auto border-top border-secondary">
-        <div class="container text-center">
-            <p class="m-0 small text-secondary">&copy; 2026 EL UNSITO 2.0 - Comunidad Universitaria.</p>
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center text-sm">
+            <p>&copy; 2026 <span class="text-white font-semibold">EL UNSITO 2.0</span> - Comunidad Universitaria.</p>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

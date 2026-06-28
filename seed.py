@@ -2,12 +2,10 @@ from app.database import SessionLocal, engine, Base
 from app.models import Seccion
 
 def poblar_secciones():
-    # Asegura que las tablas estén creadas
     Base.metadata.create_all(bind=engine)
     
     db = SessionLocal()
     try:
-        # Secciones base correspondientes a tus páginas del UNSITO
         secciones_base = [
             {"nombre": "Academia", "slug": "academia"},
             {"nombre": "Cultura", "slug": "cultura"},
@@ -17,7 +15,6 @@ def poblar_secciones():
         
         print("Insertando secciones base...")
         for sec in secciones_base:
-            # Verificar si ya existe para no duplicar
             existe = db.query(Seccion).filter(Seccion.slug == sec["slug"]).first()
             if not existe:
                 nueva_seccion = Seccion(nombre=sec["nombre"], slug=sec["slug"])

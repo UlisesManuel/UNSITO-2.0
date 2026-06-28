@@ -1,78 +1,156 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full bg-slate-50">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Noticia - EL UNSITO 2.0</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        institucional: {
+                            50: '#fdf3f3',
+                            100: '#fbe4e4',
+                            600: '#841f1f',
+                            700: '#6a1616', 
+                            800: '#561111',
+                            900: '#3d0b0b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-light">
+<body class="flex flex-col min-h-full font-sans antialiased text-slate-800">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="/admin/dashboard">
-                <i class="bi bi-shield-lock-fill me-2"></i>EL UNSITO 2.0 Admin
+    <!-- Navbar de Administración -->
+    <nav class="bg-slate-900 text-white shadow border-b border-slate-950 py-3">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 flex items-center justify-between">
+            
+            <!-- Logo Oficial de El Unsito 2.0 -->
+            <a class="flex items-center transition-opacity hover:opacity-90" href="/admin/dashboard" title="Inicio Panel">
+                <img src="/static/imagenes/Logo.svg" alt="EL UNSITO 2.0" class="h-12 w-auto select-none block">
             </a>
-            <a href="/admin/dashboard" class="btn btn-outline-light btn-sm">
-                <i class="bi bi-arrow-left me-1"></i>Volver al Panel
+            
+            <a href="/admin/dashboard" class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500 bg-slate-800/50 px-3 py-2 rounded-xl transition-all">
+                <!-- Heroicons: arrow-left (Outline) -->
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                </svg>
+                Volver al Panel
             </a>
         </div>
     </nav>
 
-    <div class="container my-5" style="max-width: 800px;">
-        <div class="card shadow border-0">
-            <div class="card-header bg-warning text-dark py-3">
-                <h4 class="m-0 fw-bold"><i class="bi bi-pencil-square me-2"></i>Modificar Publicación</h4>
+    <!-- Contenedor Principal del Formulario -->
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 my-10">
+        <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+            
+            <!-- Encabezado del Card (Estilo Warning / Modificación) -->
+            <div class="bg-amber-500 px-6 py-5 text-slate-950 flex items-center gap-3">
+                <div class="bg-slate-950/10 p-2 rounded-xl">
+                    <!-- Heroicons: pencil-square (Outline) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-slate-950">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.128-1.897l8.96-8.96ZM16.862 4.487 19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-black tracking-wide uppercase">Modificar Publicación</h1>
+                    <p class="text-amber-950/80 text-xs font-medium">Actualiza o corrige la información de la noticia seleccionada.</p>
+                </div>
             </div>
-            <div class="card-body p-4">
-                <form action="/admin/editar/{{ noticia.id }}" method="POST" enctype="multipart/form-data">
-                    
-                    <div class="mb-3">
-                        <label for="titulo" class="form-label fw-semibold">Título de la Noticia</label>
-                        <input type="text" class="form-control form-control-lg" id="titulo" name="titulo" value="{{ noticia.titulo }}" required>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="seccion_id" class="form-label fw-semibold">Sección Editorial</label>
-                            <select class="form-select" id="seccion_id" name="seccion_id" required>
+            <!-- Formulario de Edición -->
+            <form action="/admin/editar/{{ noticia.id }}" method="POST" enctype="multipart/form-data" class="p-6 sm:p-8 space-y-6">
+                
+                <!-- Título de la Noticia -->
+                <div>
+                    <label for="titulo" class="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-2">Título de la Noticia</label>
+                    <input type="text" id="titulo" name="titulo" value="{{ noticia.titulo }}" required
+                        class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent focus:bg-white font-semibold transition-all shadow-inner">
+                </div>
+
+                <!-- Fila: Sección Editorial y Carga de Imagen -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Selección de Sección -->
+                    <div>
+                        <label for="seccion_id" class="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-2">Sección Editorial</label>
+                        <div class="relative">
+                            <select id="seccion_id" name="seccion_id" required
+                                class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent focus:bg-white font-medium transition-all shadow-inner appearance-none">
                                 {% for seccion in secciones %}
                                     <option value="{{ seccion.id }}" {% if seccion.id == noticia.seccion_id %}selected{% endif %}>
                                         {{ seccion.nombre }}
                                     </option>
                                 {% endfor %}
                             </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                                <!-- Heroicons: chevron-down (Outline) -->
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="imagen" class="form-label fw-semibold">Reemplazar Imagen (Opcional)</label>
-                            <input type="file" class="form-control" id="imagen" name="imagen" accept="image/png, image/jpeg, image/jpg">
-                            <div class="form-text text-muted">Deja este campo vacío si deseas conservar la imagen actual.</div>
-                        </div>
                     </div>
 
-                    <div class="mb-4">
-                        <label for="contenido" class="form-label fw-semibold">Cuerpo de la Noticia</label>
-                        <textarea class="form-control" id="contenido" name="contenido" rows="8" required>{{ noticia.contenido }}</textarea>
+                    <!-- Remplazar Imagen (Opcional) -->
+                    <div>
+                        <label for="imagen" class="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-2">Reemplazar Imagen <span class="text-xs font-normal text-slate-400 text-none lowercase">(opcional)</span></label>
+                        <input type="file" id="imagen" name="imagen" accept="image/png, image/jpeg, image/jpg" onchange="previewImage(event)"
+                            class="w-full bg-slate-50 border border-slate-200 rounded-2xl text-slate-500 file:mr-4 file:py-3.5 file:px-4 file:rounded-l-2xl file:border-0 file:text-xs file:font-extrabold file:uppercase file:tracking-wider file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium transition-all cursor-pointer shadow-inner">
+                        <p class="text-xs text-slate-400 mt-1.5 pl-1">Deja este campo vacío si deseas conservar la imagen actual.</p>
                     </div>
+                </div>
 
-                    <div class="mb-4 text-center">
-                        <p class="form-label fw-semibold text-start">Miniatura Actual:</p>
-                        <img src="{{ noticia.imagen_url }}" alt="Vista previa" class="img-thumbnail rounded object-fit-cover" style="max-height: 150px;">
+                <!-- Cuerpo de la Noticia -->
+                <div>
+                    <label for="contenido" class="block text-sm font-bold text-slate-700 uppercase tracking-wider mb-2">Cuerpo de la Noticia</label>
+                    <textarea id="contenido" name="contenido" rows="9" required
+                        class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-4 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent focus:bg-white font-medium transition-all shadow-inner leading-relaxed">{{ noticia.contenido }}</textarea>
+                </div>
+
+                <!-- Visualización de Portada (Miniatura Actual / Nueva Vista Previa) -->
+                <div class="border border-slate-100 rounded-3xl p-4 bg-slate-50/50 flex flex-col items-center justify-center space-y-2">
+                    <span id="preview-label" class="block text-xs font-bold text-slate-400 uppercase tracking-wider w-full text-left pl-1">Portadas de la Publicación (Actual):</span>
+                    <div class="relative max-w-sm w-full shadow-md rounded-2xl overflow-hidden border border-slate-200 bg-white p-1.5">
+                        <img id="image-preview" src="{{ noticia.imagen_url }}" alt="Vista previa de portada" class="max-h-56 w-full object-cover rounded-xl">
                     </div>
+                </div>
 
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <a href="/admin/dashboard" class="btn btn-light border px-4">Cancelar</a>
-                        <button type="submit" class="btn btn-warning px-5 fw-bold">
-                            <i class="bi bi-check-circle-fill me-2"></i>Guardar Cambios
-                        </button>
-                    </div>
+                <!-- Botones de Acción inferior -->
+                <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4 border-t border-slate-100">
+                    <a href="/admin/dashboard" 
+                        class="inline-flex items-center justify-center font-bold text-sm text-slate-500 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 px-6 py-3 rounded-2xl transition-colors">
+                        Cancelar
+                    </a>
+                    <button type="submit" 
+                        class="inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-sm uppercase tracking-wider px-8 py-3 rounded-2xl shadow-md shadow-amber-500/10 hover:shadow-lg transition-all">
+                        <!-- Heroicons: check-circle (Solid) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.5 2.5a.75.75 0 0 0 1.14-.082l3.75-5.25Z" clip-rule="evenodd" />
+                        </svg>
+                        Guardar Cambios
+                    </button>
+                </div>
 
-                </form>
-            </div>
+            </form>
         </div>
-    </div>
+    </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-500 py-5 border-t border-slate-950 mt-auto">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <p class="text-xs font-semibold tracking-wide">&copy; 2026 EL UNSITO 2.0 &bull; Panel de Control Administrativo</p>
+        </div>
+    </footer>
+
+    <!-- Script para cambiar dinámicamente la vista previa si se selecciona una nueva imagen -->
+    <script src="static/JS/vistaEditar.js"></script>
+
 </body>
 </html>

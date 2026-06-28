@@ -1,6 +1,4 @@
-# ==============================================================================
-# 1. TODAS LAS IMPORTACIONES (HASTA ARRIBA)
-# ==============================================================================
+# TODAS LAS IMPORTACIONES
 import os
 import shutil
 from fastapi import FastAPI, Depends, Request, HTTPException, Form, Response, Cookie, File, UploadFile
@@ -12,9 +10,8 @@ from sqlalchemy.orm import Session
 from .database import engine, Base, get_db
 from . import models, crud
 
-# ==============================================================================
 # 2. CONFIGURACIÓN E INICIALIZACIÓN DE LA APP
-# ==============================================================================
+
 # Inicializar las tablas en la base de datos automáticamente
 Base.metadata.create_all(bind=engine)
 
@@ -23,7 +20,7 @@ app = FastAPI(title="EL UNSITO 2.0")
 # Configurar rutas absolutas para directorios
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Montar archivos estáticos (CSS, JS, Imágenes)
+# Montar archivos estáticos 
 app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
 
 # Configurar directorio para almacenar las imágenes subidas físicamente
@@ -38,12 +35,12 @@ ADMIN_USER = "admin"
 ADMIN_PASS = "admin123"
 
 def es_administrador(request: Request):
-    """Función auxiliar para verificar si el usuario está logueado mediante cookies"""
+    """Función para verificar si el usuario está logueado mediante cookies"""
     return request.cookies.get("sesion_admin") == "activa"
 
 def verificar_admin_cookie(request: Request):
     """
-    Dependencia de seguridad que valida la cookie del administrador.
+    Dependencia que valida la cookie del administrador.
     Si no es válida, interrumpe la petición lanzando una redirección limpia.
     """
     if request.cookies.get("sesion_admin") != "activa":
@@ -54,10 +51,8 @@ def verificar_admin_cookie(request: Request):
         )
     return True
 
-# ==============================================================================
-# 3. RUTAS PÚBLICAS
-# ==============================================================================
 
+# 3. RUTAS PÚBLICAS
 @app.get("/")
 def home(request: Request, db: Session = Depends(get_db)):
     noticias_carrusel = crud.obtener_noticias_carrusel(db, limite_por_seccion=2 )
@@ -70,7 +65,6 @@ def home(request: Request, db: Session = Depends(get_db)):
 
 @app.get("/seccion/{slug}")
 def ver_seccion(slug: str, request: Request, db: Session = Depends(get_db)):
-    # Buscamos ignorando mayúsculas/minúsculas tanto en el slug como en el nombre
     seccion = db.query(models.Seccion).filter(
         (models.Seccion.slug == slug.lower()) | 
         (models.Seccion.nombre.ilike(slug))
@@ -79,7 +73,6 @@ def ver_seccion(slug: str, request: Request, db: Session = Depends(get_db)):
     if not seccion:
         raise HTTPException(status_code=404, detail="Sección no encontrada")
         
-    # Usamos el slug real de la base de datos para traer las noticias
     noticias = crud.obtener_noticias_por_seccion(db, seccion_slug=seccion.slug)
     return templates.TemplateResponse(
         request,
@@ -98,9 +91,7 @@ def ver_noticia(noticia_id: int, request: Request, db: Session = Depends(get_db)
         {"noticia": noticia}
     )
 
-# ==============================================================================
-# 4. RUTAS DE ADMINISTRACIÓN (PANEL PRIVADO BLINDADO Y CON SOPORTE PARA ARCHIVOS)
-# ==============================================================================
+# 4. RUTAS DE ADMINISTRACIÓN 
 
 @app.get("/login")
 def mostrar_login(request: Request):
@@ -135,7 +126,7 @@ def guardar_nueva_noticia(
     titulo: str = Form(...), 
     contenido: str = Form(...),
     seccion_id: int = Form(...), 
-    imagen: UploadFile = File(...), # Recibe el archivo binario real
+    imagen: UploadFile = File(...),
     db: Session = Depends(get_db), 
     _=Depends(verificar_admin_cookie)
 ):

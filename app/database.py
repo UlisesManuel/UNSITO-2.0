@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# Usaremos SQLite para desarrollo local (creará un archivo unsito.db)
+# Uso de SQLite para desarrollo local
 SQLALCHEMY_DATABASE_URL = "sqlite:///./unsito.db"
 
 engine = create_engine(

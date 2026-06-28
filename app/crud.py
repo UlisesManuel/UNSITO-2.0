@@ -3,9 +3,7 @@ from sqlalchemy import func
 from . import models
 import html
 
-# ==============================================================================
-# FUNCIONES DE LECTURA (ADMIN Y FRONT)
-# ==============================================================================
+# FUNCIONES DE LECTURA
 
 def obtener_noticias_carrusel(db: Session, limite_por_seccion: int = 2):
     """
@@ -18,7 +16,7 @@ def obtener_noticias_carrusel(db: Session, limite_por_seccion: int = 2):
 
 def obtener_noticias_recientes(db: Session, limite: int = 6):
     """
-    Trae las últimas publicaciones ordenadas de forma cronológica descendente.
+    Trae las últimas publicaciones ordenadas de forma cronológica descendente
     """
     return db.query(models.Noticia)\
              .order_by(models.Noticia.id.desc())\
@@ -27,7 +25,7 @@ def obtener_noticias_recientes(db: Session, limite: int = 6):
 
 def obtener_noticia_y_contar_visita(db: Session, noticia_id: int):
     """
-    Busca una noticia por su ID y le aumenta el contador de visitas.
+    Busca una noticia por su ID y le aumenta el contador de visitas
     """
     noticia = db.query(models.Noticia).filter(models.Noticia.id == noticia_id).first()
     if noticia:
@@ -38,15 +36,14 @@ def obtener_noticia_y_contar_visita(db: Session, noticia_id: int):
 
 def obtener_todas_las_noticias_admin(db: Session):
     """
-    Trae absolutamente todas las noticias ordenadas por la más reciente.
-    Ideal para la tabla del panel de administración.
+    Trae todas las noticias ordenadas por la más reciente
     """
     return db.query(models.Noticia).order_by(models.Noticia.fecha_modificacion.desc()).all()
 
 
 def obtener_noticias_por_seccion(db: Session, seccion_slug: str):
     """
-    Filtra las noticias que pertenecen a una sección específica usando su slug.
+    Filtra las noticias que pertenecen a una sección específica
     """
     return db.query(models.Noticia)\
              .join(models.Seccion)\
@@ -55,12 +52,11 @@ def obtener_noticias_por_seccion(db: Session, seccion_slug: str):
              .all()
 
 
-# ==============================================================================
-# FUNCIONES DE ESCRITURA (CUD - CREATE, UPDATE, DELETE)
-# ==============================================================================
+
+# FUNCIONES  CREATE, UPDATE y DELETE
+
 
 def crear_noticia(db: Session, titulo: str, contenido: str, imagen_url: str, seccion_id: int):
-    # Sanitizar textos eliminando etiquetas dañinas
     titulo_limpio = html.escape(titulo.strip())
     contenido_limpio = html.escape(contenido.strip())
     

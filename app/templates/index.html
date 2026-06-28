@@ -99,7 +99,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
             
             <!-- Nota Principal Destacada -->
-            <div class="lg:col-span-2">
+            <div class="lg:col-span-2">  
                 <h3 class="font-bold text-xl text-institucional-700 mb-4 flex items-center gap-2">
                     <!-- Heroicons: star (Solid) -->
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-amber-500">
@@ -107,26 +107,29 @@
                     </svg>
                     Destacados
                 </h3>
-                
                 {% if carrusel %}
-                <div class="relative bg-slate-900 rounded-2xl overflow-hidden shadow-lg group aspect-[16/9]">
+                <div class="relative rounded-2xl overflow-hidden shadow-lg aspect-[16/9]">
+
                     {% for noticia in carrusel %}
-                    {% if loop.first %}
-                    <img src="{{ noticia.imagen_url }}" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition-transform duration-500" alt="Portada">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-                    <div class="absolute bottom-0 p-6 md:p-8 text-white w-full">
-                        <h5 class="text-xl md:text-3xl font-black mb-2 leading-tight tracking-tight">{{ noticia.titulo }}</h5>
-                        <p class="text-sm text-slate-200 line-clamp-2 mb-4 max-w-2xl">{{ noticia.contenido }}</p>
-                        <a href="/noticia/{{ noticia.id }}" class="inline-flex items-center bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold px-4 py-2 rounded-xl text-sm transition-all shadow-md transform hover:-translate-y-0.5">
-                            Leer nota completa
-                        </a>
+                    <div class="slide absolute inset-0 transition-opacity duration-1000 opacity-0 pointer-events-none {% if loop.first %}opacity-100 pointer-events-auto z-10{% endif %}">
+                        <img src="{{ noticia.imagen_url }}"
+                            class="w-full h-full object-cover"
+                            alt="Portada">
+
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+
+                        <div class="absolute bottom-0 p-6 text-white w-full">
+                            <h3 class="text-3xl font-black">{{ noticia.titulo }}</h3>
+                            <p class="mt-2">{{ noticia.contenido[:150] }}...</p>
+
+                            <a href="/noticia/{{ noticia.id }}"
+                            class="inline-block mt-4 bg-amber-500 px-4 py-2 rounded-xl font-bold text-black">
+                                Leer nota completa
+                            </a>
+                        </div>
                     </div>
-                    {% endif %}
                     {% endfor %}
-                </div>
-                {% else %}
-                <div class="bg-institucional-50 border border-institucional-200 text-institucional-800 p-4 rounded-xl text-sm font-medium">
-                    No hay noticias destacadas aún.
+
                 </div>
                 {% endif %}
             </div>
@@ -235,6 +238,6 @@
             <p>&copy; 2026 <span class="text-white font-semibold">EL UNSITO 2.0</span> - Comunidad Universitaria.</p>
         </div>
     </footer>
-
+    <script src="static/JS/carrousel.js"></script>
 </body>
 </html>

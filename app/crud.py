@@ -9,11 +9,13 @@ def obtener_noticias_carrusel(db: Session, limite_por_seccion: int = 2):
     """
     Obtiene las noticias para el carrusel de la página de inicio.
     """
+    #Consulta a la base y seleccion de las 2 notas más recientes de cada sección
     return db.query(models.Noticia)\
              .order_by(models.Noticia.visitas.desc())\
              .limit(limite_por_seccion * 2)\
              .all()
 
+#Obtiene las 6 noticias más recientes y las enlista
 def obtener_noticias_recientes(db: Session, limite: int = 6):
     """
     Trae las últimas publicaciones ordenadas de forma cronológica descendente
@@ -57,6 +59,7 @@ def obtener_noticias_por_seccion(db: Session, seccion_slug: str):
 
 
 def crear_noticia(db: Session, titulo: str, contenido: str, imagen_url: str, seccion_id: int):
+    #Protección contrs scripts
     titulo_limpio = html.escape(titulo.strip())
     contenido_limpio = html.escape(contenido.strip())
     

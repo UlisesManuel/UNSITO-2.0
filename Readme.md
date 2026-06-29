@@ -113,7 +113,7 @@ Para poder usar **EL UNSITO** seguir cuidadosamente los siguientes pasos:
 # 1. Clonar el Código Fuente de mi repositorio
 Abre tu terminal favorita y descarga el repositorio:
 
-`git clone [https://github.com/UlisesManuel/UNSITO-2.0.git]`
+`git clone https://github.com/UlisesManuel/UNSITO-2.0`
 `cd UNSITO-2.0`
 
 # 2. Creación e Instalación de Dependencias
